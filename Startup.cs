@@ -15,7 +15,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
-namespace MartinKearn
+namespace Microsoft.BotBuilderSamples
 {
     /// <summary>
     /// The Startup class configures services and the request pipeline.
@@ -36,8 +36,6 @@ namespace MartinKearn
 
             if (env.IsDevelopment())
             {
-                // For more details on using the user secret store see 
-                // http://go.microsoft.com/fwlink/?LinkID=532709
                 builder.AddUserSecrets<Startup>(false);
             }
 
@@ -61,7 +59,7 @@ namespace MartinKearn
         /// <seealso cref="https://docs.microsoft.com/en-us/azure/bot-service/bot-service-manage-channels?view=azure-bot-service-4.0"/>
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddBot<AgeVerificationBot>(options =>
+            services.AddBot<EchoWithCounterBot>(options =>
             {
                 var secretKey = Configuration.GetSection("botFileSecret")?.Value;
                 var botFilePath = Configuration.GetSection("botFilePath")?.Value;
@@ -81,7 +79,7 @@ namespace MartinKearn
                 options.CredentialProvider = new SimpleCredentialProvider(endpointService.AppId, endpointService.AppPassword);
 
                 // Creates a logger for the application to use.
-                ILogger logger = _loggerFactory.CreateLogger<AgeVerificationBot>();
+                ILogger logger = _loggerFactory.CreateLogger<EchoWithCounterBot>();
 
                 // Catches any errors that occur during a conversation turn and logs them.
                 options.OnTurnError = async (context, exception) =>
@@ -121,7 +119,7 @@ namespace MartinKearn
 
             // Create and register state accesssors.
             // Acessors created here are passed into the IBot-derived class on every turn.
-            services.AddSingleton<AgeVerificationBotAccessors>(sp =>
+            services.AddSingleton<EchoBotAccessors>(sp =>
             {
                 var options = sp.GetRequiredService<IOptions<BotFrameworkOptions>>().Value;
                 if (options == null)
@@ -137,9 +135,9 @@ namespace MartinKearn
 
                 // Create the custom state accessor.
                 // State accessors enable other components to read and write individual properties of state.
-                var accessors = new AgeVerificationBotAccessors(conversationState)
+                var accessors = new EchoBotAccessors(conversationState)
                 {
-                    CounterState = conversationState.CreateProperty<CounterState>(AgeVerificationBotAccessors.CounterStateName),
+                    CounterState = conversationState.CreateProperty<CounterState>(EchoBotAccessors.CounterStateName),
                 };
 
                 return accessors;

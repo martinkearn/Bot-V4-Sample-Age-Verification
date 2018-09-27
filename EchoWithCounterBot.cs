@@ -7,7 +7,7 @@ using Microsoft.Bot.Builder;
 using Microsoft.Bot.Schema;
 using Microsoft.Extensions.Logging;
 
-namespace MartinKearn
+namespace Microsoft.BotBuilderSamples
 {
     /// <summary>
     /// Represents a bot that processes incoming activities.
@@ -20,25 +20,25 @@ namespace MartinKearn
     /// <see cref="IStatePropertyAccessor{T}"/> object are created with a singleton lifetime.
     /// </summary>
     /// <seealso cref="https://docs.microsoft.com/en-us/aspnet/core/fundamentals/dependency-injection?view=aspnetcore-2.1"/>
-    public class AgeVerificationBot : IBot
+    public class EchoWithCounterBot : IBot
     {
-        private readonly AgeVerificationBotAccessors _accessors;
+        private readonly EchoBotAccessors _accessors;
         private readonly ILogger _logger;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="AgeVerificationBot"/> class.
+        /// Initializes a new instance of the <see cref="EchoWithCounterBot"/> class.
         /// </summary>
         /// <param name="accessors">A class containing <see cref="IStatePropertyAccessor{T}"/> used to manage state.</param>
         /// <param name="loggerFactory">A <see cref="ILoggerFactory"/> that is hooked to the Azure App Service provider.</param>
         /// <seealso cref="https://docs.microsoft.com/en-us/aspnet/core/fundamentals/logging/?view=aspnetcore-2.1#windows-eventlog-provider"/>
-        public AgeVerificationBot(AgeVerificationBotAccessors accessors, ILoggerFactory loggerFactory)
+        public EchoWithCounterBot(EchoBotAccessors accessors, ILoggerFactory loggerFactory)
         {
             if (loggerFactory == null)
             {
                 throw new System.ArgumentNullException(nameof(loggerFactory));
             }
 
-            _logger = loggerFactory.CreateLogger<AgeVerificationBot>();
+            _logger = loggerFactory.CreateLogger<EchoWithCounterBot>();
             _logger.LogTrace("EchoBot turn start.");
             _accessors = accessors ?? throw new System.ArgumentNullException(nameof(accessors));
         }

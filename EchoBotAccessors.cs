@@ -4,22 +4,22 @@
 using System;
 using Microsoft.Bot.Builder;
 
-namespace MartinKearn
+namespace Microsoft.BotBuilderSamples
 {
     /// <summary>
     /// This class is created as a Singleton and passed into the IBot-derived constructor.
-    ///  - See <see cref="AgeVerificationBot"/> constructor for how that is injected.
+    ///  - See <see cref="EchoWithCounterBot"/> constructor for how that is injected.
     ///  - See the Startup.cs file for more details on creating the Singleton that gets
     ///    injected into the constructor.
     /// </summary>
-    public class AgeVerificationBotAccessors
+    public class EchoBotAccessors
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="AgeVerificationBotAccessors"/> class.
+        /// Initializes a new instance of the <see cref="EchoBotAccessors"/> class.
         /// Contains the <see cref="ConversationState"/> and associated <see cref="IStatePropertyAccessor{T}"/>.
         /// </summary>
         /// <param name="conversationState">The state object that stores the counter.</param>
-        public AgeVerificationBotAccessors(ConversationState conversationState)
+        public EchoBotAccessors(ConversationState conversationState)
         {
             ConversationState = conversationState ?? throw new ArgumentNullException(nameof(conversationState));
         }
@@ -29,7 +29,7 @@ namespace MartinKearn
         /// </summary>
         /// <remarks>Accessors require a unique name.</remarks>
         /// <value>The accessor name for the counter accessor.</value>
-        public static string CounterStateName { get; } = $"{nameof(AgeVerificationBotAccessors)}.CounterState";
+        public static string CounterStateName { get; } = $"{nameof(EchoBotAccessors)}.CounterState";
 
         /// <summary>
         /// Gets or sets the <see cref="IStatePropertyAccessor{T}"/> for CounterState.
