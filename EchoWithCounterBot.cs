@@ -4,6 +4,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Bot.Builder;
+using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Schema;
 using Microsoft.Extensions.Logging;
 
@@ -43,6 +44,8 @@ namespace Microsoft.BotBuilderSamples
             _accessors = accessors ?? throw new System.ArgumentNullException(nameof(accessors));
         }
 
+        private DialogSet Dialogs { get; set; }
+
         /// <summary>
         /// Every conversation turn for our Echo Bot will call this method.
         /// There are no dialogs used, since it's "single turn" processing, meaning a single
@@ -63,25 +66,8 @@ namespace Microsoft.BotBuilderSamples
             // see https://aka.ms/about-bot-activity-message to learn more about the message and other activity types
             if (turnContext.Activity.Type == ActivityTypes.Message)
             {
-                // Get the conversation state from the turn context.
-                var state = await _accessors.CounterState.GetAsync(turnContext, () => new CounterState());
-
-                // Bump the turn count for this conversation.
-                state.TurnCount++;
-
-                // Set the property using the accessor.
-                await _accessors.CounterState.SetAsync(turnContext, state);
-
-                // Save the new turn count into the conversation state.
-                await _accessors.ConversationState.SaveChangesAsync(turnContext);
-
-                // Echo back to the user whatever they typed.
-                var responseMessage = $"Turn {state.TurnCount}: You sent '{turnContext.Activity.Text}'\n";
+                var responseMessage = $"{turnContext.Activity.Text}";
                 await turnContext.SendActivityAsync(responseMessage);
-            }
-            else
-            {
-                await turnContext.SendActivityAsync($"{turnContext.Activity.Type} event detected");
             }
         }
     }
