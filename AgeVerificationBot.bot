@@ -1,41 +1,52 @@
 {
-  "name": "AgeVerificationBot",
-  "padlock": "EIZRFBmB+yx4hFv4s7X0ew==!j9HHBmu+xYPsvTr/8HTy2CvHGGUwq5mBLC/aJLiHGf6umhfv44fXDlWTvNgO7m9Q",
-  "version": "2.0",
-  "services": [
-    {
-      "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47",
-      "subscriptionId": "1fcbb1ab-1178-46fc-8c5d-f0e20b65610d",
-      "resourceGroup": "AgeVerification",
-      "serviceName": "AgeVerificationBot",
-      "type": "abs",
-      "name": "AgeVerificationBot",
-      "id": "1"
-    },
-    {
-      "connectionString": "WMfHRQU0NtW5H5MjyqlXXg==!E+SnE0ZnvfskZEurXi1SZaq6V2/ysUiSPYES/+fHkfUqe9lFpMz5fXqlXkRk9Zbn7rwHXF1va5KXeEM/yovR3XD7kdfD0o/XfOB1+phOX+Qb+bFJt50siwrr8dDKP82NSRfmQ7XM/bxHMJgBaM7ZPTglxk2Cj3mkR0s7Xth3/rMblpki8h+dKlo1gONhVZEePMZYQw83ntICAdbtNczsrir2xJ4kECZq57JS9k5G+3A=",
-      "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47",
-      "subscriptionId": "1fcbb1ab-1178-46fc-8c5d-f0e20b65610d",
-      "resourceGroup": "AgeVerification",
-      "serviceName": "ageverificationbotbe36",
-      "type": "blob",
-      "id": "2"
-    },
-    {
-      "appId": "",
-      "appPassword": "",
-      "endpoint": "http://localhost:3978/api/messages",
-      "type": "endpoint",
-      "name": "development",
-      "id": "3"
-    },
-    {
-      "appId": "3d75f754-e244-41fb-8645-f9703f770146",
-      "appPassword": "N3u39b6F+2pUoB8O1a1R7A==!9FbpBhdRF0kYJ94jPj0dLcARFvOgOvjQvt6CWzeOzwI=",
-      "endpoint": "https://ageverificationbot.azurewebsites.net/api/messages",
-      "type": "endpoint",
-      "name": "production",
-      "id": "4"
-    }
-  ]
+    "name": "AgeVerificationBot",
+    "description": "",
+    "services": [
+        {
+            "type": "abs",
+            "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47",
+            "subscriptionId": "1fcbb1ab-1178-46fc-8c5d-f0e20b65610d",
+            "resourceGroup": "AgeVerification",
+            "serviceName": "AgeVerificationBot",
+            "name": "AgeVerificationBot",
+            "id": "1",
+            "appId": "3d75f754-e244-41fb-8645-f9703f770146"
+        },
+        {
+            "type": "blob",
+            "connectionString": "0U9cPjnDIL3JTgL1Q4jkgg==!b6dZBi9I94xJYqzctbOeSAR+/DG4j/J1Ien5ecBDdcV28WJsYMleEAsd7Z7jua38BlYY7P/Sd4rQ8QZkrjqAfV6Kyn0mAqymVWmbGrqvQhU0yMGuKey8PXDWfu4visfob7mYccXrj1sw+U76n5Lym16QQRrGHf/+q3a3U40Zpu2gGfQchCmHUGc26fbRvU82Q1Om2hyrrPVek90se1ICFo9UTvcP3arAoGfKhjiQTX8=",
+            "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47",
+            "subscriptionId": "1fcbb1ab-1178-46fc-8c5d-f0e20b65610d",
+            "resourceGroup": "AgeVerification",
+            "serviceName": "ageverificationbotbe36",
+            "id": "2"
+        },
+        {
+            "type": "endpoint",
+            "appId": "",
+            "appPassword": "",
+            "endpoint": "http://localhost:3978/api/messages",
+            "name": "development",
+            "id": "3"
+        },
+        {
+            "type": "endpoint",
+            "appId": "3d75f754-e244-41fb-8645-f9703f770146",
+            "appPassword": "V5V29ylXR1U+0pKQnh23mw==!msVNaNGeEU6GHvjpP11cgwRNtR3JcvKLNOTDHbIdp0w=",
+            "endpoint": "https://ageverificationbot.azurewebsites.net/api/messages",
+            "name": "production",
+            "id": "4"
+        },
+        {
+            "type": "generic",
+            "name": "FaceApi",
+            "url": "https://uksouth.api.cognitive.microsoft.com/face/v1.0",
+            "configuration": {
+                "key": "Aq7EWNUUBh0RdaKab6qiwA==!d6HA6iyYj75TupcnTspnU53eqjm2ZpztPk/8qyEhaPWF1GmoXQUjOjIAHIoCNukq"
+            },
+            "id": "82"
+        }
+    ],
+    "padlock": "EIZRFBmB+yx4hFv4s7X0ew==!j9HHBmu+xYPsvTr/8HTy2CvHGGUwq5mBLC/aJLiHGf6umhfv44fXDlWTvNgO7m9Q",
+    "version": "2.0"
 }

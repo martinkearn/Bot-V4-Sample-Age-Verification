@@ -3,12 +3,16 @@
 
 using System;
 using System.Linq;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Bot.Builder;
+using Microsoft.Bot.Schema;
 using Microsoft.Bot.Builder.Dialogs;
+using Microsoft.Bot.Connector;
 using Microsoft.Bot.Schema;
 using Microsoft.Extensions.Logging;
+using EchoBotWithCounter;
 
 namespace Microsoft.BotBuilderSamples
 {
@@ -28,6 +32,8 @@ namespace Microsoft.BotBuilderSamples
         private readonly Accessors _accessors;
         private DialogSet _dialogs;
 
+        private readonly BotServices _services;
+
         public EchoWithCounterBot(Accessors accessors)
         {
             _accessors = accessors ?? throw new System.ArgumentNullException(nameof(accessors));
@@ -42,7 +48,7 @@ namespace Microsoft.BotBuilderSamples
 
             // Add named dialogs to the DialogSet. These names are saved in the dialog state.
             _dialogs.Add(new WaterfallDialog("details", waterfallSteps));
-            _dialogs.Add(new TextPrompt("requestPhoto"));
+            _dialogs.Add(new AttachmentPrompt("requestPhoto"));
         }
 
         public async Task OnTurnAsync(ITurnContext turnContext, CancellationToken cancellationToken = default(CancellationToken))
@@ -52,12 +58,12 @@ namespace Microsoft.BotBuilderSamples
                 throw new ArgumentNullException(nameof(turnContext));
             }
 
-            // Run the DialogSet - let the framework identify the current state of the dialog from
-            // the dialog stack and figure out what (if any) is the active dialog.
-            var dialogContext = await _dialogs.CreateContextAsync(turnContext, cancellationToken);
-
             if (turnContext.Activity.Type == ActivityTypes.Message)
             {
+                // Run the DialogSet - let the framework identify the current state of the dialog from
+                // the dialog stack and figure out what (if any) is the active dialog.
+                var dialogContext = await _dialogs.CreateContextAsync(turnContext, cancellationToken);
+
                 var results = await dialogContext.ContinueDialogAsync(cancellationToken);
 
                 // If the DialogTurnStatus is Empty we should start a new dialog.
@@ -100,9 +106,25 @@ namespace Microsoft.BotBuilderSamples
 
         private async Task<DialogTurnResult> RequestPhotoConfirmStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
-            var result = (string)stepContext.Result;
 
-            await stepContext.Context.SendActivityAsync(MessageFactory.Text($"Thanks {result}."), cancellationToken);
+            if (stepContext.Context.Activity.Attachments == null)
+            {
+                await stepContext.Context.SendActivityAsync(MessageFactory.Text($"I need you to send me a picture of yourself before we can continue. We'll start again now. Take a photo with your webcam or phone camera and come back to me to send it to me as an attachment."), cancellationToken);
+            }
+
+            if (stepContext.Context.Activity.Attachments.Count > 0)
+            {
+                await stepContext.Context.SendActivityAsync(MessageFactory.Text($"Thanks for sending me an attachement. Give me a few seconds while I check your age."), cancellationToken);
+
+                // Get the source image
+                var connector = new ConnectorClient(new Uri(stepContext.Context.Activity.ServiceUrl));
+                var sourceImage = await connector.HttpClient.GetStreamAsync(stepContext.Context.Activity.Attachments.FirstOrDefault().ContentUrl);
+
+                // Call Face Api
+                var httpClient = new HttpClient();
+                httpClient.BaseAddress = "https://uksouth.api.cognitive.microsoft.com/face/v1.0";
+                _accessors.ConversationState.
+            }
 
             // WaterfallStep always finishes with the end of the Waterfall or with another dialog, here it is the end.
             return await stepContext.EndDialogAsync(cancellationToken: cancellationToken);
