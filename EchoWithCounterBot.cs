@@ -66,28 +66,6 @@ namespace Microsoft.BotBuilderSamples
                     await dialogContext.BeginDialogAsync("details", null, cancellationToken);
                 }
             }
-
-            // Processes ConversationUpdate Activities to welcome the user.
-            else if (turnContext.Activity.Type == ActivityTypes.ConversationUpdate)
-            {
-                if (turnContext.Activity.MembersAdded.Any())
-                {
-                    await SendWelcomeMessageAsync(turnContext, cancellationToken);
-                }
-            }
-        }
-
-        private static async Task SendWelcomeMessageAsync(ITurnContext turnContext, CancellationToken cancellationToken)
-        {
-            foreach (var member in turnContext.Activity.MembersAdded)
-            {
-                if (member.Id != turnContext.Activity.Recipient.Id)
-                {
-                    var reply = turnContext.Activity.CreateReply();
-                    reply.Text = "Hi, how can I help you?";
-                    await turnContext.SendActivityAsync(reply, cancellationToken);
-                }
-            }
         }
 
         private static async Task<DialogTurnResult> RequestPhotoStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
