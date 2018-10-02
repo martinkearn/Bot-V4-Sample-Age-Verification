@@ -19,9 +19,6 @@ using Microsoft.Extensions.Options;
 
 namespace Microsoft.BotBuilderSamples
 {
-    /// <summary>
-    /// The Startup class configures services and the request pipeline.
-    /// </summary>
     public class Startup
     {
         private ILoggerFactory _loggerFactory;
@@ -46,7 +43,6 @@ namespace Microsoft.BotBuilderSamples
         }
 
         public IConfiguration Configuration { get; }
-
 
         public void ConfigureServices(IServiceCollection services)
         {

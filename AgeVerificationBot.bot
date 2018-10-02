@@ -40,7 +40,7 @@
         {
             "type": "generic",
             "name": "FaceApi",
-            "url": "https://uksouth.api.cognitive.microsoft.com/face/v1.0/detect",
+            "url": "https://uksouth.api.cognitive.microsoft.com/face/v1.0",
             "configuration": {
                 "key": "Aq7EWNUUBh0RdaKab6qiwA==!d6HA6iyYj75TupcnTspnU53eqjm2ZpztPk/8qyEhaPWF1GmoXQUjOjIAHIoCNukq"
             },
