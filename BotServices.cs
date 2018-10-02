@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.Bot.Builder.AI.Luis;
 using Microsoft.Bot.Configuration;
 
 namespace EchoBotWithCounter
@@ -27,36 +26,22 @@ namespace EchoBotWithCounter
             {
                 switch (service.Type)
                 {
-                    case ServiceTypes.Luis:
-                        {
-                            var luis = (LuisService)service;
-                            if (luis == null)
-                            {
-                                throw new InvalidOperationException("The LUIS service is not configured correctly in your '.bot' file.");
-                            }
-
-                            var app = new LuisApplication(luis.AppId, luis.AuthoringKey, luis.GetEndpoint());
-                            var recognizer = new LuisRecognizer(app);
-                            this.LuisServices.Add(luis.Name, recognizer);
-                            break;
-                        }
-
                     case ServiceTypes.Generic:
                         {
-                            if (service.Name == "FaceApi")
-                            {
-                                var faceApi = service as GenericService;
+                            //if (service.Name == "FaceApi")
+                            //{
+                            //    var faceApi = service as GenericService;
 
-                                if (!string.IsNullOrEmpty(faceApi.Url))
-                                {
-                                    FaceApiEndpoint = faceApi.Url;
-                                }
+                            //    if (!string.IsNullOrEmpty(faceApi.Url))
+                            //    {
+                            //        FaceApiEndpoint = faceApi.Url;
+                            //    }
 
-                                if (!string.IsNullOrEmpty(faceApi.Configuration["key"]))
-                                {
-                                    FaceApiKey = faceApi.Configuration["key"];
-                                }
-                            }
+                            //    if (!string.IsNullOrEmpty(faceApi.Configuration["key"]))
+                            //    {
+                            //        FaceApiKey = faceApi.Configuration["key"];
+                            //    }
+                            //}
 
                             break;
                         }
@@ -64,20 +49,8 @@ namespace EchoBotWithCounter
             }
         }
 
-        /// <summary>
-        /// Gets the set of LUIS Services used.
-        /// Given there can be multiple <see cref="LuisRecognizer"/> services used in a single bot,
-        /// LuisServices is represented as a dictionary.  This is also modeled in the
-        /// ".bot" file since the elements are named.
-        /// </summary>
-        /// <remarks>The LUIS services collection should not be modified while the bot is running.</remarks>
-        /// <value>
-        /// A <see cref="LuisRecognizer"/> client instance created based on configuration in the .bot file.
-        /// </value>
-        public Dictionary<string, LuisRecognizer> LuisServices { get; } = new Dictionary<string, LuisRecognizer>();
+        //public string FaceApiEndpoint { get; }
 
-        public string FaceApiEndpoint { get; }
-
-        public string FaceApiKey { get; }
+        //public string FaceApiKey { get; }
     }
 }

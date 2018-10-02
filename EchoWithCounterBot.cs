@@ -8,12 +8,15 @@ using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
 using EchoBotWithCounter;
+using EchoBotWithCounter.Models;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Connector;
 using Microsoft.Bot.Schema;
 using Microsoft.Bot.Schema;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace Microsoft.BotBuilderSamples
 {
@@ -31,15 +34,15 @@ namespace Microsoft.BotBuilderSamples
     public class EchoWithCounterBot : IBot
     {
         private readonly BotServices _services;
-        private readonly Accessors _accessors;
+        private readonly ConversationState _conversationState;
+        private readonly UserState _userState;
         private DialogSet _dialogs;
 
-        public EchoWithCounterBot(Accessors accessors, BotServices services)
+        public EchoWithCounterBot(BotServices botServices, ConversationState conversationState, UserState userState)
         {
-            _services = services ?? throw new System.ArgumentNullException(nameof(services));
-
-            _accessors = accessors ?? throw new System.ArgumentNullException(nameof(accessors));
-            _dialogs = new DialogSet(accessors.ConversationDialogState);
+            _conversationState = conversationState ?? throw new ArgumentNullException(nameof(conversationState));
+            _userState = userState ?? throw new ArgumentNullException(nameof(userState));
+            _services = botServices ?? throw new ArgumentNullException(nameof(botServices));
 
             // This array defines how the Waterfall will execute.
             var waterfallSteps = new WaterfallStep[]
@@ -49,6 +52,7 @@ namespace Microsoft.BotBuilderSamples
             };
 
             // Add named dialogs to the DialogSet. These names are saved in the dialog state.
+            _dialogs = new DialogSet(_conversationState.CreateProperty<DialogState>(nameof(EchoWithCounterBot)));
             _dialogs.Add(new WaterfallDialog("details", waterfallSteps));
             _dialogs.Add(new AttachmentPrompt("requestPhoto"));
         }
@@ -83,9 +87,6 @@ namespace Microsoft.BotBuilderSamples
                     await SendWelcomeMessageAsync(turnContext, cancellationToken);
                 }
             }
-
-            // Save the dialog state into the conversation state.
-            await _accessors.ConversationState.SaveChangesAsync(turnContext, false, cancellationToken);
         }
 
         private static async Task SendWelcomeMessageAsync(ITurnContext turnContext, CancellationToken cancellationToken)
@@ -117,29 +118,33 @@ namespace Microsoft.BotBuilderSamples
             {
                 await stepContext.Context.SendActivityAsync(MessageFactory.Text($"Thanks for sending me an attachement. Give me a few seconds while I check your age."), cancellationToken);
 
-                // Get the source image
-                var connector = new ConnectorClient(new Uri(stepContext.Context.Activity.ServiceUrl));
-                var sourceImage = await connector.HttpClient.GetStreamAsync(stepContext.Context.Activity.Attachments.FirstOrDefault().ContentUrl);
+                //// Get the source image
+                //var connector = new ConnectorClient(new Uri(stepContext.Context.Activity.ServiceUrl));
+                //var sourceImage = await connector.HttpClient.GetStreamAsync(stepContext.Context.Activity.Attachments.FirstOrDefault().ContentUrl);
 
-                // Call Face Api
-                var httpClient = new HttpClient
-                {
-                    BaseAddress = new Uri(_services.FaceApiEndpoint),
-                };
-                httpClient.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", _services.FaceApiKey);
+                //// Call Face Api
+                //var httpClient = new HttpClient
+                //{
+                //    BaseAddress = new Uri(_services.FaceApiEndpoint),
+                //};
+                //httpClient.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", _services.FaceApiKey);
 
-                // Setup data object
-                HttpContent content = new StreamContent(sourceImage);
-                content.Headers.ContentType = new MediaTypeWithQualityHeaderValue("application/octet-stream");
+                //// Setup data object
+                //HttpContent content = new StreamContent(sourceImage);
+                //content.Headers.ContentType = new MediaTypeWithQualityHeaderValue("application/octet-stream");
 
-                // Request parameters
-                var uri = $"{_services.FaceApiEndpoint}?";
+                //// Request parameters
+                //var uri = $"{_services.FaceApiEndpoint}/detect?returnFaceId=false&returnFaceLandmarks=false&returnFaceAttributes=age";
 
-                // Make request
-                var resizedImage = await httpClient.PostAsync(uri, content);
+                //// Make request
+                //var responseMessage = await httpClient.PostAsync(uri, content);
 
-                // Read bytes
-                var resizedImageBytes = await resizedImage.Content.ReadAsByteArrayAsync();
+                //// get age
+                //var responseString = await responseMessage.Content.ReadAsStringAsync();
+                //var face = JsonConvert.DeserializeObject<FaceResponseDto>(responseString.ToString());
+
+                //// Respond to user
+                //await stepContext.Context.SendActivityAsync(MessageFactory.Text($"You appear to be {face.FaceAttributes.Age}."), cancellationToken);
             }
 
             // WaterfallStep always finishes with the end of the Waterfall or with another dialog, here it is the end.
