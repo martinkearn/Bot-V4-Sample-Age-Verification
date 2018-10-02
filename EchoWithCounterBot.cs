@@ -70,7 +70,7 @@ namespace Microsoft.BotBuilderSamples
 
         private static async Task<DialogTurnResult> RequestPhotoStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
-            return await stepContext.PromptAsync("requestPhoto", new PromptOptions { Prompt = MessageFactory.Text("Sorry, but I need to verify your age before we can continue. Please send me a selfie so I can confirm your age.") }, cancellationToken);
+            return await stepContext.PromptAsync("requestPhoto", new PromptOptions { Prompt = MessageFactory.Text("I need to verify your age before we can continue. Please send me a picture of yourself so I can confirm your age.") }, cancellationToken);
         }
 
         private async Task<DialogTurnResult> RequestPhotoConfirmStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
@@ -82,7 +82,7 @@ namespace Microsoft.BotBuilderSamples
 
             if (stepContext.Context.Activity.Attachments.Count > 0)
             {
-                await stepContext.Context.SendActivityAsync(MessageFactory.Text($"Thanks for sending me an attachement. Give me a few seconds while I check your age."), cancellationToken);
+                await stepContext.Context.SendActivityAsync(MessageFactory.Text($"Thanks for sending me an attachment. Give me a few seconds while I check your age."), cancellationToken);
 
                 try
                 {
