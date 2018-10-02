@@ -78,12 +78,13 @@ namespace Microsoft.BotBuilderSamples
 
         private async Task<DialogTurnResult> RequestPhotoConfirmStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
-            var bs = new BotServices(_botConfig);
+            await stepContext.Context.SendActivityAsync(MessageFactory.Text($"Bot padlock {_botConfig.Padlock}"), cancellationToken);
+
             var faceApiService = _botConfig.Services.FirstOrDefault(s => s.Type == ServiceTypes.Generic && s.Name == "FaceApi") as GenericService;
             var faceApiUri = faceApiService.Url;
-            var faceApiKey = faceApiService.Configuration["key"];
+            //var faceApiKey = faceApiService.Configuration["key"];
 
-            await stepContext.Context.SendActivityAsync(MessageFactory.Text($"face {faceApiUri} / {faceApiKey}"), cancellationToken);
+            await stepContext.Context.SendActivityAsync(MessageFactory.Text($"face {faceApiUri} "), cancellationToken);
 
             if (stepContext.Context.Activity.Attachments == null)
             {
