@@ -4,16 +4,16 @@
 using System;
 using System.Linq;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
+using EchoBotWithCounter;
 using Microsoft.Bot.Builder;
-using Microsoft.Bot.Schema;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Connector;
 using Microsoft.Bot.Schema;
+using Microsoft.Bot.Schema;
 using Microsoft.Extensions.Logging;
-using EchoBotWithCounter;
-using System.Net.Http.Headers;
 
 namespace Microsoft.BotBuilderSamples
 {
@@ -36,7 +36,6 @@ namespace Microsoft.BotBuilderSamples
 
         public EchoWithCounterBot(Accessors accessors, BotServices services)
         {
-
             _services = services ?? throw new System.ArgumentNullException(nameof(services));
 
             _accessors = accessors ?? throw new System.ArgumentNullException(nameof(accessors));
@@ -109,7 +108,6 @@ namespace Microsoft.BotBuilderSamples
 
         private async Task<DialogTurnResult> RequestPhotoConfirmStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
-
             if (stepContext.Context.Activity.Attachments == null)
             {
                 await stepContext.Context.SendActivityAsync(MessageFactory.Text($"I need you to send me a picture of yourself before we can continue. We'll start again now. Take a photo with your webcam or phone camera and come back to me to send it to me as an attachment."), cancellationToken);
@@ -142,8 +140,6 @@ namespace Microsoft.BotBuilderSamples
 
                 // Read bytes
                 var resizedImageBytes = await resizedImage.Content.ReadAsByteArrayAsync();
-
-
             }
 
             // WaterfallStep always finishes with the end of the Waterfall or with another dialog, here it is the end.
