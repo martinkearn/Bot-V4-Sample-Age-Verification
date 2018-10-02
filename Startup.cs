@@ -59,11 +59,10 @@ namespace Microsoft.BotBuilderSamples
             IStorage dataStore = new MemoryStorage();
             var userState = new UserState(dataStore);
             var conversationState = new ConversationState(dataStore);
+            var botStateSet = new BotStateSet(userState, conversationState);
 
             services.AddSingleton(dataStore);
-            services.AddSingleton(userState);
-            services.AddSingleton(conversationState);
-            services.AddSingleton(new BotStateSet(userState, conversationState));
+            services.AddSingleton(botStateSet);
 
             // Add the bot with options
             services.AddBot<EchoWithCounterBot>(options =>
@@ -87,10 +86,10 @@ namespace Microsoft.BotBuilderSamples
                 };
 
                 // Typing Middleware (automatically shows typing when the bot is responding/working)
-                var typingMiddleware = new ShowTypingMiddleware();
-                options.Middleware.Add(typingMiddleware);
+                options.Middleware.Add(new ShowTypingMiddleware());
 
-                options.Middleware.Add(new AutoSaveStateMiddleware(userState, conversationState));
+                // Auto save middleware
+                options.Middleware.Add(new AutoSaveStateMiddleware(botStateSet));
             });
         }
 

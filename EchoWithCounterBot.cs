@@ -86,7 +86,6 @@ namespace Microsoft.BotBuilderSamples
 
                 try
                 {
-
                     await stepContext.Context.SendActivityAsync(MessageFactory.Text($"Settings {_services.FaceApiEndpoint} / {_services.FaceApiKey}"), cancellationToken);
 
                     // Get the source image
