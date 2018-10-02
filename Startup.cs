@@ -70,6 +70,10 @@ namespace Microsoft.BotBuilderSamples
                 var botConfig = BotConfiguration.Load(botFilePath ?? @".\BotConfiguration.bot", secretKey);
                 services.AddSingleton(sp => botConfig ?? throw new InvalidOperationException($"The .bot config file could not be loaded. ({botConfig})"));
 
+                // Initialize Bot Connected Services clients.
+                var connectedServices = new BotServices(botConfig);
+                services.AddSingleton(sp => connectedServices);
+
                 // Retrieve current endpoint.
                 var environment = _isProduction ? "production" : "development";
                 var service = botConfig.Services.Where(s => s.Type == "endpoint" && s.Name == environment).FirstOrDefault();
@@ -119,6 +123,10 @@ namespace Microsoft.BotBuilderSamples
                 // Create and add user state.
                 var userState = new UserState(dataStore);
                 options.State.Add(userState);
+
+                // Typing Middleware (automatically shows typing when the bot is responding/working)
+                var typingMiddleware = new ShowTypingMiddleware();
+                options.Middleware.Add(typingMiddleware);
             });
 
             // Create and register state accesssors.

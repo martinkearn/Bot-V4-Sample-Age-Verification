@@ -13,6 +13,7 @@ using Microsoft.Bot.Connector;
 using Microsoft.Bot.Schema;
 using Microsoft.Extensions.Logging;
 using EchoBotWithCounter;
+using System.Net.Http.Headers;
 
 namespace Microsoft.BotBuilderSamples
 {
@@ -29,13 +30,15 @@ namespace Microsoft.BotBuilderSamples
     /// <seealso cref="https://docs.microsoft.com/en-us/aspnet/core/fundamentals/dependency-injection?view=aspnetcore-2.1"/>
     public class EchoWithCounterBot : IBot
     {
+        private readonly BotServices _services;
         private readonly Accessors _accessors;
         private DialogSet _dialogs;
 
-        private readonly BotServices _services;
-
-        public EchoWithCounterBot(Accessors accessors)
+        public EchoWithCounterBot(Accessors accessors, BotServices services)
         {
+
+            _services = services ?? throw new System.ArgumentNullException(nameof(services));
+
             _accessors = accessors ?? throw new System.ArgumentNullException(nameof(accessors));
             _dialogs = new DialogSet(accessors.ConversationDialogState);
 
@@ -121,9 +124,26 @@ namespace Microsoft.BotBuilderSamples
                 var sourceImage = await connector.HttpClient.GetStreamAsync(stepContext.Context.Activity.Attachments.FirstOrDefault().ContentUrl);
 
                 // Call Face Api
-                var httpClient = new HttpClient();
-                httpClient.BaseAddress = "https://uksouth.api.cognitive.microsoft.com/face/v1.0";
-                _accessors.ConversationState.
+                var httpClient = new HttpClient
+                {
+                    BaseAddress = new Uri(_services.FaceApiEndpoint),
+                };
+                httpClient.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", _services.FaceApiKey);
+
+                // Setup data object
+                HttpContent content = new StreamContent(sourceImage);
+                content.Headers.ContentType = new MediaTypeWithQualityHeaderValue("application/octet-stream");
+
+                // Request parameters
+                var uri = $"{_services.FaceApiEndpoint}?";
+
+                // Make request
+                var resizedImage = await httpClient.PostAsync(uri, content);
+
+                // Read bytes
+                var resizedImageBytes = await resizedImage.Content.ReadAsByteArrayAsync();
+
+
             }
 
             // WaterfallStep always finishes with the end of the Waterfall or with another dialog, here it is the end.

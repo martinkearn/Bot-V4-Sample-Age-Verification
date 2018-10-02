@@ -40,6 +40,26 @@ namespace EchoBotWithCounter
                             this.LuisServices.Add(luis.Name, recognizer);
                             break;
                         }
+
+                    case ServiceTypes.Generic:
+                        {
+                            if (service.Name == "FaceApi")
+                            {
+                                var faceApi = service as GenericService;
+
+                                if (!string.IsNullOrEmpty(faceApi.Url))
+                                {
+                                    FaceApiEndpoint = faceApi.Url;
+                                }
+
+                                if (!string.IsNullOrEmpty(faceApi.Configuration["key"]))
+                                {
+                                    FaceApiKey = faceApi.Configuration["key"];
+                                }
+                            }
+
+                            break;
+                        }
                 }
             }
         }
@@ -55,5 +75,9 @@ namespace EchoBotWithCounter
         /// A <see cref="LuisRecognizer"/> client instance created based on configuration in the .bot file.
         /// </value>
         public Dictionary<string, LuisRecognizer> LuisServices { get; } = new Dictionary<string, LuisRecognizer>();
+
+        public string FaceApiEndpoint { get; }
+
+        public string FaceApiKey { get; }
     }
 }
