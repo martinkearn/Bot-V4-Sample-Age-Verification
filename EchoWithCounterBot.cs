@@ -78,7 +78,9 @@ namespace Microsoft.BotBuilderSamples
 
         private async Task<DialogTurnResult> RequestPhotoConfirmStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
-            await stepContext.Context.SendActivityAsync(MessageFactory.Text($"{_botConfig.Padlock.ToString()}"), cancellationToken);
+            var bs = new BotServices(_botConfig);
+
+            await stepContext.Context.SendActivityAsync(MessageFactory.Text($"face {bs.FaceApiEndpoint} / {bs.FaceApiKey}"), cancellationToken);
 
             if (stepContext.Context.Activity.Attachments == null)
             {

@@ -53,7 +53,7 @@ namespace Microsoft.BotBuilderSamples
 
             // Initialize Bot Connected Services clients.
             var connectedServices = new BotServices(botConfig);
-            services.AddSingleton(sp => connectedServices);
+            services.AddSingleton(connectedServices);
 
             // Initialize Bot State
             IStorage dataStore = new MemoryStorage();
