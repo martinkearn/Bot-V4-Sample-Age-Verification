@@ -62,6 +62,8 @@ namespace Microsoft.BotBuilderSamples
             var botStateSet = new BotStateSet(userState, conversationState);
 
             services.AddSingleton(dataStore);
+            services.AddSingleton(userState);
+            services.AddSingleton(conversationState);
             services.AddSingleton(botStateSet);
 
             // Add the bot with options
