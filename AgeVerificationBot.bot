@@ -14,7 +14,7 @@
         },
         {
             "type": "blob",
-            "connectionString": "0U9cPjnDIL3JTgL1Q4jkgg==!b6dZBi9I94xJYqzctbOeSAR+/DG4j/J1Ien5ecBDdcV28WJsYMleEAsd7Z7jua38BlYY7P/Sd4rQ8QZkrjqAfV6Kyn0mAqymVWmbGrqvQhU0yMGuKey8PXDWfu4visfob7mYccXrj1sw+U76n5Lym16QQRrGHf/+q3a3U40Zpu2gGfQchCmHUGc26fbRvU82Q1Om2hyrrPVek90se1ICFo9UTvcP3arAoGfKhjiQTX8=",
+            "connectionString": "p5Cci1+MbyEvZE/5L0tkIQ==!sQpPoy2AIdVJipm+LvhLDDAogY4NDMg5QdzVNTj/5JF+6eD8rhBA0Y9QjKn0rO92yIh1B1fsPR2UPTWwvPTsQjuuTjUSCZ83fXFK+j/9HvjODEARVogIRncDikkWPybc4D0Ypf6BeJOCuW7631TOmcC7yWilYWFqJosF1Wrb0PetZHAgiAzQHb9/JovsPpNCiViHcRxlBb+dasqeR+rJQU5hwDmxi1fwJOGzOHKafnE=",
             "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47",
             "subscriptionId": "1fcbb1ab-1178-46fc-8c5d-f0e20b65610d",
             "resourceGroup": "AgeVerification",
@@ -25,14 +25,14 @@
             "type": "endpoint",
             "appId": "",
             "appPassword": "",
-            "endpoint": "http://localhost:3978/api/messages",
+            "endpoint": "http://localhost:3978/api/messages/iwashere",
             "name": "development",
             "id": "3"
         },
         {
             "type": "endpoint",
             "appId": "3d75f754-e244-41fb-8645-f9703f770146",
-            "appPassword": "V5V29ylXR1U+0pKQnh23mw==!msVNaNGeEU6GHvjpP11cgwRNtR3JcvKLNOTDHbIdp0w=",
+            "appPassword": "zh/dS4JbJKOVQJW02IuxrA==!aMNZiJ8dUjZ0y9uvB/txba8z6PTBCG08WkfpEGbeAME=",
             "endpoint": "https://ageverificationbot.azurewebsites.net/api/messages",
             "name": "production",
             "id": "4"
@@ -42,9 +42,9 @@
             "name": "FaceApi",
             "url": "https://uksouth.api.cognitive.microsoft.com/face/v1.0",
             "configuration": {
-                "key": "Aq7EWNUUBh0RdaKab6qiwA==!d6HA6iyYj75TupcnTspnU53eqjm2ZpztPk/8qyEhaPWF1GmoXQUjOjIAHIoCNukq"
+                "key": "xXOpE4UKJ0aCmVTNk989qQ==!R5ouZHhJSzA0XDiq9YzSARdx5+0k/Yxyihi3+dWYPy4UXh1xiL4M6ZuumSYt9fi9"
             },
-            "id": "82"
+            "id": "179"
         }
     ],
     "padlock": "EIZRFBmB+yx4hFv4s7X0ew==!j9HHBmu+xYPsvTr/8HTy2CvHGGUwq5mBLC/aJLiHGf6umhfv44fXDlWTvNgO7m9Q",

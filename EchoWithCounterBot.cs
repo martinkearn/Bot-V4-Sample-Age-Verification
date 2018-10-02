@@ -78,8 +78,24 @@ namespace Microsoft.BotBuilderSamples
 
         private async Task<DialogTurnResult> RequestPhotoConfirmStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
-            await stepContext.Context.SendActivityAsync(MessageFactory.Text($"Bot padlock {_botConfig.Padlock}"), cancellationToken);
-            await stepContext.Context.SendActivityAsync(MessageFactory.Text($"Services {_botConfig.Services.Count}"), cancellationToken);
+            // It is not seeing the FaceApi service in production
+            // is it seeing any encrypted data? ... yes we can see the encrupted connection string from the blob service in local and azure
+            // Try deleting and re-adding the face api service? ... have disconnected and reconnected the faceAPI service and still not visible in azure
+            // Can i change something in one of the other services and does it show up? i.e. is the bot file being deployed ... Can see that BOT file is not getting deployed as the Dev Endpoint is not showing the 'iwashere' change i added in azure
+            var serviceNames = string.Empty;
+            foreach (var service in _botConfig.Services)
+            {
+                serviceNames += service.Id + ",";
+            }
+            await stepContext.Context.SendActivityAsync(MessageFactory.Text($"Services {_botConfig.Services.Count}. IDs {serviceNames}"), cancellationToken);
+
+
+            var blobService = _botConfig.Services.FirstOrDefault(s => s.Id == "2") as BlobStorageService;
+            await stepContext.Context.SendActivityAsync(MessageFactory.Text($"Blob connection string {blobService.ConnectionString}"), cancellationToken);
+
+            var devEndpointService = _botConfig.Services.FirstOrDefault(s => s.Id == "3") as EndpointService;
+            await stepContext.Context.SendActivityAsync(MessageFactory.Text($"Dev Endpoint connection string {devEndpointService.Endpoint}"), cancellationToken);
+
 
             var faceApiService = _botConfig.Services.FirstOrDefault(s => s.Type == ServiceTypes.Generic && s.Name == "FaceApi") as GenericService;
             var faceApiUri = faceApiService.Url;
