@@ -78,31 +78,6 @@ namespace Microsoft.BotBuilderSamples
 
         private async Task<DialogTurnResult> RequestPhotoConfirmStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
-            // It is not seeing the FaceApi service in production
-            // is it seeing any encrypted data? ... yes we can see the encrupted connection string from the blob service in local and azure
-            // Try deleting and re-adding the face api service? ... have disconnected and reconnected the faceAPI service and still not visible in azure
-            // Can i change something in one of the other services and does it show up? i.e. is the bot file being deployed ... Can see that BOT file is not getting deployed as the Dev Endpoint is not showing the 'iwashere' change i added in azure
-            var serviceNames = string.Empty;
-            foreach (var service in _botConfig.Services)
-            {
-                serviceNames += service.Id + ",";
-            }
-            await stepContext.Context.SendActivityAsync(MessageFactory.Text($"Services {_botConfig.Services.Count}. IDs {serviceNames}"), cancellationToken);
-
-
-            var blobService = _botConfig.Services.FirstOrDefault(s => s.Id == "2") as BlobStorageService;
-            await stepContext.Context.SendActivityAsync(MessageFactory.Text($"Blob connection string {blobService.ConnectionString}"), cancellationToken);
-
-            var devEndpointService = _botConfig.Services.FirstOrDefault(s => s.Id == "3") as EndpointService;
-            await stepContext.Context.SendActivityAsync(MessageFactory.Text($"Dev Endpoint connection string {devEndpointService.Endpoint}"), cancellationToken);
-
-
-            var faceApiService = _botConfig.Services.FirstOrDefault(s => s.Type == ServiceTypes.Generic && s.Name == "FaceApi") as GenericService;
-            var faceApiUri = faceApiService.Url;
-            //var faceApiKey = faceApiService.Configuration["key"];
-
-            await stepContext.Context.SendActivityAsync(MessageFactory.Text($"face {faceApiUri}"), cancellationToken);
-
             if (stepContext.Context.Activity.Attachments == null)
             {
                 await stepContext.Context.SendActivityAsync(MessageFactory.Text($"I need you to send me a picture of yourself before we can continue. We'll start again now. Take a photo with your webcam or phone camera and come back to me to send it to me as an attachment."), cancellationToken);
@@ -114,8 +89,6 @@ namespace Microsoft.BotBuilderSamples
 
                 try
                 {
-                    await stepContext.Context.SendActivityAsync(MessageFactory.Text($"Settings {_services.FaceApiEndpoint} / {_services.FaceApiKey}"), cancellationToken);
-
                     // Get the source image
                     var connector = new ConnectorClient(new Uri(stepContext.Context.Activity.ServiceUrl));
                     var sourceImage = await connector.HttpClient.GetStreamAsync(stepContext.Context.Activity.Attachments.FirstOrDefault().ContentUrl);
