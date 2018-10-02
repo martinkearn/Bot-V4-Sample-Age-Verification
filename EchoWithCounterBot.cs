@@ -86,6 +86,9 @@ namespace Microsoft.BotBuilderSamples
 
                 try
                 {
+
+                    await stepContext.Context.SendActivityAsync(MessageFactory.Text($"Settings {_services.FaceApiEndpoint} / {_services.FaceApiKey}"), cancellationToken);
+
                     // Get the source image
                     var connector = new ConnectorClient(new Uri(stepContext.Context.Activity.ServiceUrl));
                     var sourceImage = await connector.HttpClient.GetStreamAsync(stepContext.Context.Activity.Attachments.FirstOrDefault().ContentUrl);
