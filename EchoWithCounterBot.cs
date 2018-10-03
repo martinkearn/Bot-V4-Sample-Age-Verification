@@ -24,18 +24,16 @@ namespace Microsoft.BotBuilderSamples
 {
     public class EchoWithCounterBot : IBot
     {
-        private readonly BotServices _services;
+        private readonly BotServices _botServices;
         private readonly ConversationState _conversationState;
         private readonly UserState _userState;
-        private readonly BotConfiguration _botConfig;
         private DialogSet _dialogs;
 
-        public EchoWithCounterBot(BotServices botServices, ConversationState conversationState, UserState userState, BotConfiguration botConfig)
+        public EchoWithCounterBot(BotServices botServices, ConversationState conversationState, UserState userState)
         {
             _conversationState = conversationState ?? throw new ArgumentNullException(nameof(conversationState));
             _userState = userState ?? throw new ArgumentNullException(nameof(userState));
-            _services = botServices ?? throw new ArgumentNullException(nameof(botServices));
-            _botConfig = botConfig ?? throw new ArgumentNullException(nameof(botConfig));
+            _botServices = botServices ?? throw new ArgumentNullException(nameof(botServices));
 
             // This array defines how the Waterfall will execute.
             var waterfallSteps = new WaterfallStep[]
@@ -85,51 +83,46 @@ namespace Microsoft.BotBuilderSamples
 
             if (stepContext.Context.Activity.Attachments.Count > 0)
             {
-                await stepContext.Context.SendActivityAsync(MessageFactory.Text($"Thanks for sending me an attachment. Give me a few seconds while I check your age."), cancellationToken);
+                // Get the source image
+                var connector = new ConnectorClient(new Uri(stepContext.Context.Activity.ServiceUrl));
+                var sourceImage = await connector.HttpClient.GetStreamAsync(stepContext.Context.Activity.Attachments.FirstOrDefault().ContentUrl);
 
-                try
+                // Call Face Api
+                var httpClient = new HttpClient
                 {
-                    // Get the source image
-                    var connector = new ConnectorClient(new Uri(stepContext.Context.Activity.ServiceUrl));
-                    var sourceImage = await connector.HttpClient.GetStreamAsync(stepContext.Context.Activity.Attachments.FirstOrDefault().ContentUrl);
+                    BaseAddress = new Uri(_botServices.FaceApiEndpoint),
+                };
+                httpClient.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", _botServices.FaceApiKey);
 
-                    // Call Face Api
-                    var httpClient = new HttpClient
-                    {
-                        BaseAddress = new Uri(_services.FaceApiEndpoint),
-                    };
-                    httpClient.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", _services.FaceApiKey);
+                // Setup data object
+                HttpContent content = new StreamContent(sourceImage);
+                content.Headers.ContentType = new MediaTypeWithQualityHeaderValue("application/octet-stream");
 
-                    // Setup data object
-                    HttpContent content = new StreamContent(sourceImage);
-                    content.Headers.ContentType = new MediaTypeWithQualityHeaderValue("application/octet-stream");
+                // Request parameters
+                var uri = $"{_botServices.FaceApiEndpoint}/detect?returnFaceId=false&returnFaceLandmarks=false&returnFaceAttributes=age";
 
-                    // Request parameters
-                    var uri = $"{_services.FaceApiEndpoint}/detect?returnFaceId=false&returnFaceLandmarks=false&returnFaceAttributes=age";
+                // Make request
+                var responseMessage = await httpClient.PostAsync(uri, content);
 
-                    // Make request
-                    var responseMessage = await httpClient.PostAsync(uri, content);
+                // get age
+                var responseString = await responseMessage.Content.ReadAsStringAsync();
+                var faces = JsonConvert.DeserializeObject<IEnumerable<FaceResponseDto>>(responseString.ToString());
+                var firstFaceAge = faces.FirstOrDefault().FaceAttributes.Age;
 
-                    // get age
-                    var responseString = await responseMessage.Content.ReadAsStringAsync();
-                    var faces = JsonConvert.DeserializeObject<IEnumerable<FaceResponseDto>>(responseString.ToString());
-                    var firstFaceAge = faces.FirstOrDefault().FaceAttributes.Age;
+                // Respond to user
+                await stepContext.Context.SendActivityAsync(MessageFactory.Text($"You appear to be {firstFaceAge.ToString()} years old."), cancellationToken);
 
-                    // Respond to user
-                    await stepContext.Context.SendActivityAsync(MessageFactory.Text($"You appear to be {firstFaceAge.ToString()} years old."), cancellationToken);
-
-                    if (firstFaceAge > 25)
-                    {
-                        await stepContext.Context.SendActivityAsync(MessageFactory.Text($"You are old enough for us to provide information to, how can we help?"), cancellationToken);
-                    }
-                    else
-                    {
-                        await stepContext.Context.SendActivityAsync(MessageFactory.Text($"We cannot provide information to people younger than 16, but we operate the 'Challenge 25' principle and cannot help you right now, sorry."), cancellationToken);
-                    }
+                if (firstFaceAge > 25)
+                {
+                    await stepContext.Context.SendActivityAsync(MessageFactory.Text($"You are old enough to receive information about our products, how can I help?"), cancellationToken);
                 }
-                catch (Exception e)
+                else if (firstFaceAge > 16)
                 {
-                    await stepContext.Context.SendActivityAsync(MessageFactory.Text($"{e.Message}."), cancellationToken);
+                    await stepContext.Context.SendActivityAsync(MessageFactory.Text($"I cannot provide information to people younger than 16 but also operate the 'Challenge 25' principle. You appear to be between 16 and 25 and so I cannot help you via this channel, sorry."), cancellationToken);
+                }
+                else {
+
+                    await stepContext.Context.SendActivityAsync(MessageFactory.Text($"I cannot provide information to people younger than 16 so cannot help you via this channel, sorry."), cancellationToken);
                 }
             }
 

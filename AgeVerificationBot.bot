@@ -1,6 +1,6 @@
 {
     "name": "AgeVerificationBot",
-    "description": "",
+    "description": "A bot that verifies a persions age based on their face",
     "services": [
         {
             "type": "abs",

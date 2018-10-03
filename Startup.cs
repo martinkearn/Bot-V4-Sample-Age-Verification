@@ -49,7 +49,6 @@ namespace Microsoft.BotBuilderSamples
             var botFilePath = Configuration.GetSection("botFilePath")?.Value;
             var botFileSecret = Configuration.GetSection("botFileSecret")?.Value;
             var botConfig = BotConfiguration.Load(botFilePath ?? @".\BotConfiguration.bot", botFileSecret);
-            services.AddSingleton(sp => botConfig ?? throw new InvalidOperationException($"The .bot config file could not be loaded. ({botConfig})"));
 
             // Initialize Bot Connected Services clients.
             var connectedServices = new BotServices(botConfig);
@@ -59,12 +58,9 @@ namespace Microsoft.BotBuilderSamples
             IStorage dataStore = new MemoryStorage();
             var userState = new UserState(dataStore);
             var conversationState = new ConversationState(dataStore);
-            var botStateSet = new BotStateSet(userState, conversationState);
-
             services.AddSingleton(dataStore);
             services.AddSingleton(userState);
             services.AddSingleton(conversationState);
-            services.AddSingleton(botStateSet);
 
             // Add the bot with options
             services.AddBot<EchoWithCounterBot>(options =>
@@ -91,7 +87,7 @@ namespace Microsoft.BotBuilderSamples
                 options.Middleware.Add(new ShowTypingMiddleware());
 
                 // Auto save middleware
-                options.Middleware.Add(new AutoSaveStateMiddleware(botStateSet));
+                options.Middleware.Add(new AutoSaveStateMiddleware(new BotStateSet(userState, conversationState)));
             });
         }
 
